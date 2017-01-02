@@ -2,6 +2,7 @@ package rune_tools;
 
 import rune_info.Rune;
 import rune_info.SubStat;
+import rune_info.Translator;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,10 +52,10 @@ public class RuneEvaluator {
 
     private double evaluate_even_slot(Rune rune) {
 
-        final double PRIMARY_RATIO = 0.35;
+        final double PRIMARY_RATIO = 0.30;
         final double POTENTIAL_RATIO = 0.20;
         final double SYNERGY_WITH_PRIMARY_RATIO = 0.20;
-        final double SUBSTAT_QUALITY_RATIO = 0.25;
+        final double SUBSTAT_QUALITY_RATIO = 0.30;
 
         // Assert the numbers add up to around 1
         double min_diff = 0.0005;
@@ -165,6 +166,9 @@ public class RuneEvaluator {
         // Evaluate sub stats
         for (SubStat subStat : rune.getSub_stats()) {
             score += evaluate_sub_stat(subStat) * whole;
+
+//            System.out.println(Translator.getInstance().translate_stat(subStat.getStat()) + ' ' + evaluate_sub_stat(subStat) * whole);
+
         }
 
         return score;
@@ -219,28 +223,28 @@ public class RuneEvaluator {
         stat_value = new HashMap<>();
 
         stat_value.put(Rune.FLAT_HP, 20);
-        stat_value.put(Rune.PERC_HP, 90);
+        stat_value.put(Rune.PERC_HP, 85);
         stat_value.put(Rune.FLAT_ATK, 20);
         stat_value.put(Rune.PERC_ATK, 80);
         stat_value.put(Rune.FLAT_DEF, 20);
-        stat_value.put(Rune.PERC_DEF, 70);
-        stat_value.put(Rune.SPD, 100);
+        stat_value.put(Rune.PERC_DEF, 74);
+        stat_value.put(Rune.SPD, 110);
         stat_value.put(Rune.CRI_RATE, 90);
         stat_value.put(Rune.CRIT_DMG, 80);
-        stat_value.put(Rune.RES, 70);
-        stat_value.put(Rune.ACC, 70);
+        stat_value.put(Rune.RES, 65);
+        stat_value.put(Rune.ACC, 65);
 
         support_set = new HashSet<>();
-        support_set.add(Rune.FLAT_HP);
+//        support_set.add(Rune.FLAT_HP);
         support_set.add(Rune.PERC_HP);
-        support_set.add(Rune.FLAT_DEF);
+//        support_set.add(Rune.FLAT_DEF);
         support_set.add(Rune.PERC_DEF);
         support_set.add(Rune.SPD);
         support_set.add(Rune.RES);
         support_set.add(Rune.ACC);
 
         attack_set = new HashSet<>();
-        attack_set.add(Rune.FLAT_ATK);
+//        attack_set.add(Rune.FLAT_ATK);
         attack_set.add(Rune.PERC_ATK);
         attack_set.add(Rune.SPD);
         attack_set.add(Rune.CRI_RATE);
@@ -250,9 +254,9 @@ public class RuneEvaluator {
         primary_stat_value = new int[7][11];
 
         // Slot 2
-        primary_stat_value[2][Rune.PERC_HP] = 80;
+        primary_stat_value[2][Rune.PERC_HP] = 70;
         primary_stat_value[2][Rune.PERC_ATK] = 90;
-        primary_stat_value[2][Rune.PERC_HP] = 50;
+        primary_stat_value[2][Rune.PERC_DEF] = 50;
         primary_stat_value[2][Rune.SPD] = 100;
 
         // Slot 4
