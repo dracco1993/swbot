@@ -56,7 +56,7 @@ public class RuneIdentifier {
 
         Region top_section = new Region(x, y, w, h);
 
-        top_section.highlight();
+//        top_section.highlight();
 
         ArrayList<String> slot_images = new ArrayList<>();
         slot_images.add("slot_1");
