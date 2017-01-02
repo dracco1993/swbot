@@ -52,9 +52,11 @@ public class RuneIdentifier {
         int x = rune_region.getX() + (int)(rune_region.getW() * 0.08);
         int y = rune_region.getY() + (int)(rune_region.getH() * 0.17);
         int w = (int)(rune_region.getW() * 0.16);
-        int h = (int)(rune_region.getH() * 0.05);
+        int h = (int)(rune_region.getH() * 0.15);
 
         Region top_section = new Region(x, y, w, h);
+
+        top_section.highlight();
 
         ArrayList<String> slot_images = new ArrayList<>();
         slot_images.add("slot_1");
@@ -76,7 +78,7 @@ public class RuneIdentifier {
 
                 Match slot = top_section.find(slot_images.get(i));
 
-//                System.out.println("slot " + (i + 1) + ' ' +  slot.getScore());
+                System.out.println("slot " + (i + 1) + ' ' +  slot.getScore());
 
                 if (slot.getScore() > hscore) {
                     hslot = i + 1;

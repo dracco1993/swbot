@@ -26,7 +26,8 @@ public abstract class SuperBattle {
 
         // Check if the GUI exists
         try {
-            Region r = nox_region.wait(gui_name, 10);
+            Match match = nox_region.wait(gui_name, 10);
+            if(match.getScore() < 0.80) return false;
         } catch (FindFailed e) {
             // Failed to find the GUI
             System.out.println("Failed to find " + gui_name);
@@ -212,22 +213,20 @@ public abstract class SuperBattle {
         boolean attempt1 = persistent_click("replay");
         if (!attempt1) return false;
 
-        return true;
+        try {
 
-//        try {
-//
-//            Region out_of_energy = nox_region.wait("not_enough_energy", 3);
-//
-//            System.out.println("Out of Energy");
-//
-//            Region no = nox_region.wait("no", 3);
-//            randomized_click(no);
-//
-//        } catch (FindFailed e) {
-//            return true;
-//        }
-//
-//        return persistent_click("replay");
+            Region out_of_energy = nox_region.wait("not_enough_energy", 3);
+
+            System.out.println("Out of Energy");
+
+            Region no = nox_region.wait("no", 3);
+            randomized_click(no);
+
+        } catch (FindFailed e) {
+            return true;
+        }
+
+        return persistent_click("replay");
 
     }
 
@@ -239,7 +238,9 @@ public abstract class SuperBattle {
 
             // Start Battle
             boolean sb_click = persistent_click("start_battle");
-            if (!sb_click) return;
+            if (!sb_click) {
+                return;
+            }
 
             // Wait for game to load stage
             sleep(5000);
@@ -267,6 +268,8 @@ public abstract class SuperBattle {
                 if (!defeat) return;
 
             }
+
+            sleep(3000);
 
             boolean post_result = post_stage_options();
             if (!post_result) return;
