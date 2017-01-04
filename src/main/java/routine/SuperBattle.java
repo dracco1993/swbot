@@ -280,6 +280,53 @@ public abstract class SuperBattle {
 
     }
 
+    public void battle_mode_single() {
+
+        System.out.println("Starting...");
+
+        // Start Battle
+        boolean sb_click = persistent_click("start_battle");
+        if (!sb_click) {
+            return;
+        }
+
+        // Wait for game to load stage
+        sleep(5000);
+
+        // Check if auto has been enabled
+        try {
+
+            Match match = nox_region.find("auto");
+
+            if (match.getScore() > 0.85) {
+                match.click();
+            }
+
+        } catch (FindFailed e) {
+            e.printStackTrace();
+        }
+
+        boolean victory = wait_for_victory();
+
+        if (!victory) {
+
+            boolean defeat = wait_for_defeat();
+
+            // If we failed to find defeat, something went wrong
+            if (!defeat) return;
+
+        }
+
+        sleep(3000);
+
+        boolean post_result = post_stage_options();
+        if (!post_result) return;
+
+
+
+    }
+
+
 
     public SuperBattle() {
         NoxFinder noxFinder = new NoxFinder();

@@ -17,7 +17,23 @@
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>1.4.0</version>
                     <configuration>
-                        <mainClass>org.davidcl.sudokusolver.java_fx.Main</mainClass>
+                        <mainClass>org.davidcl.sw-bot.routine.RuneBattle</mainClass>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <!-- Build an executable JAR -->
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.0.2</version>
+                    <configuration>
+                        <archive>
+                            <manifest>
+                                <addClasspath>true</addClasspath>
+                                <classpathPrefix>lib/</classpathPrefix>
+                                <mainClass>org.davidcl.sw-bot.routine.RuneBattle</mainClass>
+                            </manifest>
+                        </archive>
                     </configuration>
                 </plugin>
 

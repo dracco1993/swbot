@@ -26,47 +26,48 @@ public class RuneBattle extends SuperBattle{
 
             ExecutorService executor = Executors.newFixedThreadPool(2);
 
-            Rune rune1 = null, rune2 = null;
+            Rune rune1 = runeIdentifier1.identify_rune();
 
-            do {
-
-                Future<Rune> future_rune1 = executor.submit(new Callable<Rune>() {
-                    public Rune call() throws Exception {
-                        return runeIdentifier1.identify_rune();
-                    }
-                });
-
-                sleep(5000);
-
-                Future<Rune> future_rune2 = executor.submit(new Callable<Rune>() {
-                    public Rune call() throws Exception {
-                        return runeIdentifier2.identify_rune();
-                    }
-                });
-
-                try {
-
-                    rune1 = future_rune1.get();
-                    rune2 = future_rune2.get();
-
-                    System.out.println(rune1);
-                    System.out.println(rune2);
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } finally {
-                    executor.shutdown();
-                }
-
-            } while (!rune1.equals(rune2));
+//            do {
+//
+//                Future<Rune> future_rune1 = executor.submit(new Callable<Rune>() {
+//                    public Rune call() throws Exception {
+//                        return runeIdentifier1.identify_rune();
+//                    }
+//                });
+//
+//                sleep(10000);
+//
+//                Future<Rune> future_rune2 = executor.submit(new Callable<Rune>() {
+//                    public Rune call() throws Exception {
+//                        return runeIdentifier2.identify_rune();
+//                    }
+//                });
+//
+//                try {
+//
+//                    rune1 = future_rune1.get();
+//                    rune2 = future_rune2.get();
+//
+//                    System.out.println(rune1);
+//                    System.out.println(rune2);
+//
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                } catch (ExecutionException e) {
+//                    e.printStackTrace();
+//                } finally {
+//                    executor.shutdown();
+//                }
+//
+//            } while (!rune1.equals(rune2));
 
             RuneEvaluator runeEvaluator = new RuneEvaluator();
 
             boolean verdict = runeEvaluator.keep_rune(rune1);
 
-            System.out.println("Verdict " +  (verdict ? "Keep" : "Sell"));
+            System.out.println("Score: " + runeEvaluator.find_score(rune1));
+            System.out.println("Verdict: " +  (verdict ? "Keep" : "Sell"));
 
             // For testing purposes
             sleep(10000);
@@ -149,7 +150,7 @@ public class RuneBattle extends SuperBattle{
 
     public static void main(String[] args) {
         RuneBattle runeBattle = new RuneBattle();
-        runeBattle.battle_mode();
+        runeBattle.battle_mode_single();
     }
 
 }

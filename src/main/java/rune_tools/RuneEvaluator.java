@@ -69,6 +69,7 @@ public class RuneEvaluator {
 
         // Potential
         if(rune.getGrade() == 6) score += POTENTIAL_RATIO;
+        else if (rune.getPrimary_stat() == Rune.SPD) score += 0.50 * POTENTIAL_RATIO;
 
         // Synergy
 

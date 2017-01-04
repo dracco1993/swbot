@@ -396,19 +396,14 @@ public class RuneIdentifier {
 
         final Region rune_region = locate_border();
 
-
         // Define
         Callable<Integer> slot_call = () -> eval_slot(rune_region);
 
-
         Callable<Integer> grade_call = () -> eval_grade(rune_region);
-
 
         Callable<Integer> primary_call = () -> eval_primary_stat(rune_region);
 
-
         Callable<SubStat> innate_call = () -> eval_substat_stat(rune_region, find_innate_region(rune_region));
-
 
         ArrayList<Region> sub_regions = new ArrayList<>();
         sub_regions.add(find_sub1_region(rune_region));
@@ -500,8 +495,8 @@ public class RuneIdentifier {
 
     public RuneIdentifier() {
 
-        ImagePath.add(getClass().getResource("/sw_icons"));
-        ImagePath.add(getClass().getResource("/rune_imgs"));
+        ImagePath.add(getClass().getResource("/sw_icons").getPath());
+        ImagePath.add(getClass().getResource("/rune_imgs").getPath());
         nox_region = new NoxFinder().find_nox();
 
         runeEvaluator = new RuneEvaluator();
