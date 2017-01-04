@@ -51,6 +51,7 @@ public class NoxFinder {
 
         screen = new Screen();
         ImagePath.add(getClass().getResource("/sw_icons"));
+        ImagePath.add(getClass().getResource("/rune_imgs"));
 
     }
 

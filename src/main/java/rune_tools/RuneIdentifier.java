@@ -495,8 +495,8 @@ public class RuneIdentifier {
 
     public RuneIdentifier() {
 
-        ImagePath.add(getClass().getResource("/sw_icons").getPath());
-        ImagePath.add(getClass().getResource("/rune_imgs").getPath());
+        ImagePath.add(getClass().getResource("/sw_icons"));
+        ImagePath.add(getClass().getResource("/rune_imgs"));
         nox_region = new NoxFinder().find_nox();
 
         runeEvaluator = new RuneEvaluator();
