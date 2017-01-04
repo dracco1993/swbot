@@ -54,8 +54,8 @@ public class RuneEvaluator {
 
         final double PRIMARY_RATIO = 0.30;
         final double POTENTIAL_RATIO = 0.20;
-        final double SYNERGY_WITH_PRIMARY_RATIO = 0.20;
-        final double SUBSTAT_QUALITY_RATIO = 0.30;
+        final double SYNERGY_WITH_PRIMARY_RATIO = 0.25;
+        final double SUBSTAT_QUALITY_RATIO = 0.35;
 
         // Assert the numbers add up to around 1
         double min_diff = 0.0005;
@@ -188,6 +188,18 @@ public class RuneEvaluator {
         return (double)value / sub_max[stat];
     }
 
+    public boolean is_even(Rune rune) {
+
+        HashSet<Integer> flat_stat = new HashSet<>();
+
+        flat_stat.add(Rune.FLAT_ATK);
+        flat_stat.add(Rune.FLAT_DEF);
+        flat_stat.add(Rune.FLAT_HP);
+
+        return !flat_stat.contains(rune.getPrimary_stat()) || (rune.getSlot() % 2 == 0);
+
+    }
+
     public double find_score(Rune rune) {
 
         double score = 0;
@@ -196,7 +208,7 @@ public class RuneEvaluator {
         if (rune.getGrade() == -1) return score;
 
         // Check if it's an even or odd slot rune
-        if (rune.getSlot() % 2 == 0) {
+        if (is_even(rune)) {
             score = evaluate_even_slot(rune);
         } else {
             score = evaluate_odd_slot(rune);
@@ -210,7 +222,7 @@ public class RuneEvaluator {
 
         double score = find_score(rune);
 
-        if (rune.getSlot() % 2 == 0) {
+        if (is_even(rune)) {
             return score >= EVEN_SLOT_MIN_SCORE;
         } else {
             return score >= ODD_SLOT_MIN_SCORE;
@@ -235,16 +247,16 @@ public class RuneEvaluator {
         stat_value.put(Rune.ACC, 65);
 
         support_set = new HashSet<>();
-//        support_set.add(Rune.FLAT_HP);
+        support_set.add(Rune.FLAT_HP);
         support_set.add(Rune.PERC_HP);
-//        support_set.add(Rune.FLAT_DEF);
+        support_set.add(Rune.FLAT_DEF);
         support_set.add(Rune.PERC_DEF);
         support_set.add(Rune.SPD);
         support_set.add(Rune.RES);
         support_set.add(Rune.ACC);
 
         attack_set = new HashSet<>();
-//        attack_set.add(Rune.FLAT_ATK);
+        attack_set.add(Rune.FLAT_ATK);
         attack_set.add(Rune.PERC_ATK);
         attack_set.add(Rune.SPD);
         attack_set.add(Rune.CRI_RATE);

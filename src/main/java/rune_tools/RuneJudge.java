@@ -23,16 +23,24 @@ public class RuneJudge {
     }
 
     public RuneJudge() {
-
         runeEvaluator = new RuneEvaluator();
         runeIdentifier = new RuneIdentifier();
-
     }
 
     public static void main(String[] args) {
 
         RuneJudge runeJudge = new RuneJudge();
         runeJudge.judge_rune();
+
+    }
+
+    public static void sleep(long ms) {
+
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
+        }
 
     }
 

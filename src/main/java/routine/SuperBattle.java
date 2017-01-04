@@ -37,18 +37,20 @@ public abstract class SuperBattle {
         // Click the GUI until it disappears
         while (true) {
 
-            System.out.println("Trying to click " + gui_name);
+            System.out.println("Checking if " + gui_name + " exists");
 
             try {
 
                 Match gui = nox_region.wait(gui_name,1);
 
+                System.out.println("It Exists!");
+
                 if (gui.getScore() < 0.80) return true;
 
                 randomized_click(gui);
 
-                // Wait 1.5 seconds
-                sleep(1500);
+                // Wait
+                sleep(2000);
 
             } catch (FindFailed e) {
                 // If we failed to find it, the gui has been interacted with (hopefully successfully)
@@ -106,7 +108,7 @@ public abstract class SuperBattle {
             int h = region.getH() - 8 * dh;
 
             int x = region.getX() + dw;
-            int y = region.getY() + (int)(0.5 * dh);
+            int y = region.getY() + (int)(0.2 * dh);
 
             int rand_x = x + (int)(Math.random() * w);
             int rand_y = y + (int)(Math.random() * h);

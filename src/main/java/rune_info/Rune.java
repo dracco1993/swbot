@@ -120,4 +120,27 @@ public class Rune {
         this.sub_stats = sub_stats;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+
+        Rune other = (Rune) obj;
+
+        boolean ret = true;
+
+        ret &= (this.slot == other.slot);
+        ret &= (this.grade == other.grade);
+        ret &= (this.primary_stat == other.primary_stat);
+        ret &= (this.innate_stat == null && other.innate_stat == null) ||
+                ((this.innate_stat != null && other.innate_stat != null) && this.innate_stat.equals(other.innate_stat));
+        ret &= (this.sub_stats.size() == other.sub_stats.size());
+
+        if (!ret) return ret;
+
+        for (int i = 0; i < this.sub_stats.size(); i++) {
+            ret &= this.sub_stats.get(i).equals(other.getSub_stats().get(i));
+        }
+
+        return ret;
+
+    }
 }

@@ -21,6 +21,7 @@ public class RuneIdentifier {
     private Region nox_region;
     private RuneEvaluator runeEvaluator;
 
+
     public Region locate_border() {
 
         Region ret = null;
@@ -56,27 +57,16 @@ public class RuneIdentifier {
 
         Region top_section = new Region(x, y, w, h);
 
-//        top_section.highlight();
-
-        ArrayList<String> slot_images = new ArrayList<>();
-        slot_images.add("slot_1");
-        slot_images.add("slot_2");
-        slot_images.add("slot_3");
-        slot_images.add("slot_4");
-        slot_images.add("slot_5");
-        slot_images.add("slot_6");
-
-        Settings.MinSimilarity = 0;
+        String[] slot_images = {"slot_1", "slot_2", "slot_3", "slot_4", "slot_5", "slot_6"};
 
         int hslot = 0;
         double hscore = 0;
 
-        for (int i = 0; i < slot_images.size(); i++) {
+        for (int i = 0; i < slot_images.length; i++) {
 
             try {
 
-
-                Match slot = top_section.find(slot_images.get(i));
+                Match slot = top_section.find(slot_images[i]);
 
                 System.out.println("slot " + (i + 1) + ' ' +  slot.getScore());
 
@@ -91,8 +81,6 @@ public class RuneIdentifier {
             }
 
         }
-
-        Settings.MinSimilarity = 0.70;
 
         return hslot;
 
@@ -152,27 +140,34 @@ public class RuneIdentifier {
         primary_images.add("primary_resist");
         primary_images.add("primary_accuracy");
 
+        Settings.MinSimilarity = 0.10;
+
+        int ret = -1;
+        double ret_score = 0;
+
         for (int i = 0; i < primary_images.size(); i++) {
 
-            int idx = -1;
+            int idx;
 
             try {
 
                 Match primary_stat = primary_region.find(primary_images.get(i));
 
-//                System.out.println(Translator.getInstance().translate_stat(i + 3) + " " + primary_stat.getScore());
-
-                if (primary_stat.getScore() < 0.83) continue;
-
                 if (i < 3) {
 
                     idx = i * 2;
 
-                    // Try to find a percent sign
-                    Match percent = primary_region.find("primary_percent");
+                    try {
 
-                    // It's a percent rune
-                    if (percent.getScore() > 0.80) idx++;
+                        // Try to find a percent sign
+                        Match percent = primary_region.find("primary_percent");
+
+                        // It's a percent rune
+                        if (percent.getScore() >= 0.70) idx++;
+
+                    } catch (FindFailed e) {
+//                        System.out.println("It's not a percent rune");
+                    }
 
                 } else {
 
@@ -181,15 +176,24 @@ public class RuneIdentifier {
 
                 }
 
+                if (primary_stat.getScore() > ret_score) {
+
+                    ret = idx;
+                    ret_score = primary_stat.getScore();
+
+                    System.out.println("Primary: " + Translator.getInstance().translate_stat(ret) + " : " + ret_score);
+
+                }
+
             } catch (FindFailed e) {
 //                System.out.println("tested: " + i);
             }
 
-            if (idx != -1) return idx;
-
         }
 
-        return -1;
+        Settings.MinSimilarity = 0.70;
+
+        return ret;
 
     }
 
@@ -206,27 +210,32 @@ public class RuneIdentifier {
         sub_images.add("sub_resist");
         sub_images.add("sub_accuracy");
 
-        for (int i = 0; i < sub_images.size(); i++) {
+        int ret = -1;
+        double ret_score = 0.60;
 
-            int idx = -1;
+        for (int i = 0; i < sub_images.size(); i++) {
 
             try {
 
+                int idx;
+
                 Match sub_stat = sub_region.find(sub_images.get(i));
-
-//                System.out.println(i + " : " + sub_stat.getScore());
-
-                if (sub_stat.getScore() < 0.80) continue;
 
                 if (i < 3) {
 
                     idx = i * 2;
 
-                    // Try to find a percent sign
-                    Match percent = sub_region.find("sub_percent");
+                    try {
 
-                    // It's a percent rune
-                    if (percent.getScore() > 0.80) idx++;
+                        // Try to find a percent sign
+                        Match percent = sub_region.find("sub_percent");
+
+                        // It's a percent rune
+                        if (percent.getScore() > 0.80) idx++;
+
+                    } catch (FindFailed f) {
+                        // It's not a percent substat
+                    }
 
                 } else {
 
@@ -235,47 +244,54 @@ public class RuneIdentifier {
 
                 }
 
+                if (sub_stat.getScore() > ret_score) {
+                    ret = idx;
+                    ret_score = sub_stat.getScore();
+
+//                    System.out.println("Substat: " + Translator.getInstance().translate_stat(ret) + " : " + ret_score);
+                }
+
             } catch (FindFailed e) {
 //                System.out.println("tested: " + sub_images.get(i));
             }
 
-            if (idx != -1) {
+        }
 
-                int val = 0;
+        if (ret != -1) {
 
-                // Flat Stat, the value is not a concern
-                if (idx == 0 || idx == 2 || idx == 4) {
+            int val = 0;
 
-                    return new SubStat(idx, 1);
+            // Flat Stat, the value is not a concern
+            if (ret == 0 || ret == 2 || ret == 4) {
 
-                } else {
+                return new SubStat(ret, 1);
 
-                    try {
+            } else {
 
-                        Region plus_region = sub_region.find("sub_plus");
+                try {
 
-                        int x = plus_region.getX() + plus_region.getW();
-                        int y = sub_region.getY();
-                        int w = plus_region.getW() + 2;
-                        int h = sub_region.getH();
+                    Region plus_region = sub_region.find("sub_plus");
 
-                        Region number_region = new Region(x, y, w, h);
+                    int x = plus_region.getX() + plus_region.getW();
+                    int y = sub_region.getY();
+                    int w = plus_region.getW() + 2;
+                    int h = sub_region.getH();
 
-                        val = find_value(number_region);
+                    Region number_region = new Region(x, y, w, h);
 
-                    } catch (FindFailed e) {
-                        e.printStackTrace();
-                    }
+                    val = find_value(number_region);
 
+                } catch (FindFailed e) {
+                    e.printStackTrace();
                 }
-
-                return new SubStat(idx, val);
 
             }
 
-        }
+            return new SubStat(ret, val);
 
-        return null;
+        } else {
+            return null;
+        }
 
     }
 
@@ -293,7 +309,7 @@ public class RuneIdentifier {
 
             try {
 
-                Match m = num_region.find(number_images.get(i));
+                Match m = num_region.wait(number_images.get(i), 5);
 //                System.out.println("Num: " + (i + 4) + " : " + m.getScore());
 
                 if (m.getScore() < 0.85) continue;
@@ -376,26 +392,22 @@ public class RuneIdentifier {
 
     public Rune identify_rune() {
 
-        ExecutorService executor = Executors.newCachedThreadPool();
+        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
         final Region rune_region = locate_border();
 
+
         // Define
-        Callable<Integer> slot_call = () -> {
-            return eval_slot(rune_region);
-        };
+        Callable<Integer> slot_call = () -> eval_slot(rune_region);
 
-        Callable<Integer> grade_call = () -> {
-            return eval_grade(rune_region);
-        };
 
-        Callable<Integer> primary_call = () -> {
-            return eval_primary_stat(rune_region);
-        };
+        Callable<Integer> grade_call = () -> eval_grade(rune_region);
 
-        Callable<SubStat> innate_call = () -> {
-            return eval_substat_stat(rune_region, find_innate_region(rune_region));
-        };
+
+        Callable<Integer> primary_call = () -> eval_primary_stat(rune_region);
+
+
+        Callable<SubStat> innate_call = () -> eval_substat_stat(rune_region, find_innate_region(rune_region));
 
 
         ArrayList<Region> sub_regions = new ArrayList<>();
@@ -411,9 +423,7 @@ public class RuneIdentifier {
 
             final int idx = i;
 
-            Callable<SubStat> subStatCallable = () -> {
-                return eval_substat_stat(rune_region, sub_regions.get(idx));
-            };
+            Callable<SubStat> subStatCallable = () -> eval_substat_stat(rune_region, sub_regions.get(idx));
 
             substat_futures.add(executor.submit(subStatCallable));
 
@@ -457,6 +467,34 @@ public class RuneIdentifier {
         }
 
         return null;
+
+
+//        int slot = eval_slot(rune_region);
+//        int grade = eval_grade(rune_region);
+//        int primary = eval_primary_stat(rune_region);
+//        SubStat innate_stat = eval_substat_stat(rune_region, find_innate_region(rune_region));
+//
+//        ArrayList<Region> sub_regions = new ArrayList<>();
+//        sub_regions.add(find_sub1_region(rune_region));
+//        sub_regions.add(find_sub2_region(rune_region));
+//        sub_regions.add(find_sub3_region(rune_region));
+//        sub_regions.add(find_sub4_region(rune_region));
+//
+//        ArrayList<SubStat> sub_stats = new ArrayList<>();
+//
+//        for (int i = 0; i < sub_regions.size(); i++) {
+//
+//            SubStat subStat = eval_substat_stat(rune_region, sub_regions.get(i));
+//
+//            if (subStat != null) sub_stats.add(subStat);
+//
+//        }
+//
+//        int rarity = sub_stats.size();
+//
+//        Rune ret = new Rune(slot, grade, rarity, primary, innate_stat, sub_stats);
+//
+//        return ret;
 
     }
 

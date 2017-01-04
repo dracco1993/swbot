@@ -35,4 +35,10 @@ public class SubStat {
 
         return sb.toString();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        SubStat other = (SubStat) obj;
+        return this.stat == other.stat && this.value == other.value;
+    }
 }
