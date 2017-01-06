@@ -57,32 +57,48 @@ public class RuneIdentifier {
 
         Region top_section = new Region(x, y, w, h);
 
-        String[] slot_images = {"slot_1", "slot_2", "slot_3", "slot_4", "slot_5", "slot_6"};
+        ArrayList<String[]> slot_images = new ArrayList<>();
 
-        int hslot = 0;
-        double hscore = 0;
+        slot_images.add(new String[]{"slot_1_a", "slot_1_b", "slot_1_c", "slot_1_d"});
+        slot_images.add(new String[]{"slot_2_a", "slot_2_b", "slot_2_c", "slot_2_d"});
+        slot_images.add(new String[]{"slot_3_a", "slot_3_b", "slot_3_c", "slot_3_d"});
+        slot_images.add(new String[]{"slot_4_a", "slot_4_b", "slot_4_c", "slot_4_d"});
+        slot_images.add(new String[]{"slot_5_a", "slot_5_b", "slot_5_c", "slot_5_d"});
+        slot_images.add(new String[]{"slot_6_a", "slot_6_b", "slot_6_c", "slot_6_d"});
 
-        for (int i = 0; i < slot_images.length; i++) {
+        int ret = 0;
+        double ret_score = 0;
 
-            try {
+        for (int i = 0; i < slot_images.size(); i++) {
 
-                Match slot = top_section.find(slot_images[i]);
+            double avg_score = 0;
 
-                System.out.println("slot " + (i + 1) + ' ' +  slot.getScore());
+            for (String slot_image : slot_images.get(i)) {
 
-                if (slot.getScore() > hscore) {
-                    hslot = i + 1;
-                    hscore = slot.getScore();
+                try {
+
+                    Match match = top_section.find(slot_image);
+                    avg_score += match.getScore();
+
+                } catch (FindFailed e) {
+
                 }
 
-
-            } catch (FindFailed e) {
-//                System.out.println("It's not slot " + (i + 1));
             }
 
+            avg_score /= slot_images.get(i).length;
+
+            System.out.println("Slot " + (i + 1) + " : " + avg_score);
+
+            if (avg_score > ret_score) {
+
+                ret = i + 1;
+                ret_score = avg_score;
+
+            }
         }
 
-        return hslot;
+        return ret;
 
     }
 
@@ -462,34 +478,6 @@ public class RuneIdentifier {
         }
 
         return null;
-
-
-//        int slot = eval_slot(rune_region);
-//        int grade = eval_grade(rune_region);
-//        int primary = eval_primary_stat(rune_region);
-//        SubStat innate_stat = eval_substat_stat(rune_region, find_innate_region(rune_region));
-//
-//        ArrayList<Region> sub_regions = new ArrayList<>();
-//        sub_regions.add(find_sub1_region(rune_region));
-//        sub_regions.add(find_sub2_region(rune_region));
-//        sub_regions.add(find_sub3_region(rune_region));
-//        sub_regions.add(find_sub4_region(rune_region));
-//
-//        ArrayList<SubStat> sub_stats = new ArrayList<>();
-//
-//        for (int i = 0; i < sub_regions.size(); i++) {
-//
-//            SubStat subStat = eval_substat_stat(rune_region, sub_regions.get(i));
-//
-//            if (subStat != null) sub_stats.add(subStat);
-//
-//        }
-//
-//        int rarity = sub_stats.size();
-//
-//        Rune ret = new Rune(slot, grade, rarity, primary, innate_stat, sub_stats);
-//
-//        return ret;
 
     }
 

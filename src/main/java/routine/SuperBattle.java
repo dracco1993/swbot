@@ -160,7 +160,7 @@ public abstract class SuperBattle {
         try {
 
             // Wait for 6 minutes
-            Region victory_region = nox_region.wait("victory", 360);
+            Region victory_region = nox_region.wait("victory", 300);
 
             sleep(2500);
 
@@ -274,7 +274,6 @@ public abstract class SuperBattle {
             sleep(3000);
 
             boolean post_result = post_stage_options();
-            if (!post_result) return;
 
         }
 
@@ -287,7 +286,11 @@ public abstract class SuperBattle {
         // Start Battle
         boolean sb_click = persistent_click("start_battle");
         if (!sb_click) {
-            return;
+
+            // Check if we're at the replay screen
+            boolean replay_click = persistent_click("replay");
+            if (!replay_click) return;
+
         }
 
         // Wait for game to load stage
@@ -319,10 +322,7 @@ public abstract class SuperBattle {
 
         sleep(3000);
 
-        boolean post_result = post_stage_options();
-        if (!post_result) return;
-
-
+        post_stage_options();
 
     }
 
